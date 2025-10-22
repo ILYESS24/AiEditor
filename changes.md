@@ -1,5 +1,24 @@
 # AiEditor ChangeLog
 
+## v1.4.0 20251015 （AIEditor Pro 商业版）:
+- feat: Added ListKeymap Unified List Shortcut Key Configuration
+- feat: Optimize the configuration results of ListItemExt
+- feat: Further optimize the configuration of mobile devices
+- fix: When customizing the pasteProcessor, the li content pasted in cannot merge
+- fix: Annotations and comment content are automatically HTML escaped to prevent XSS issues in certain situations
+- fix: Issue where font settings in HTML do not take effect when exporting Word
+- fix: Issue where line height and indentation content do not take effect when exporting Word
+---
+- 新增：新增 ListKeymap 统一的列表的快捷键配置
+- 优化：优化 ListItemExt 的配置结果
+- 优化：进一步优化移动端的配置
+- 修复：自定义 pasteProcessor 时，粘贴进来的 li 内容无法融合
+- 修复：批注和评论内容自动进行 html 转义，防止在某些情况下出现 xss 的问题
+- 修复：导出 word 时，html 中的字体设置不生效的问题
+- 修复：导出 word 时，行高和缩进内容不生效的问题
+
+
+
 ## v1.3.9 20250917 （AIEditor Pro 商业版）:
 - feat: Added a new LaTeX plugin and supports pasting common LaTeX content, such as Feishu.
 - feat: Added support for adding user avatars to Mention.

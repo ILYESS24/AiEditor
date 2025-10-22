@@ -280,6 +280,11 @@
   resolved "https://registry.npmmirror.com/@tiptap/extension-list-item/-/extension-list-item-2.26.1.tgz"
   integrity sha512-quOXckC73Luc3x+Dcm88YAEBW+Crh3x5uvtQOQtn2GEG91AshrvbnhGRiYnfvEN7UhWIS+FYI5liHFcRKSUKrQ==
 
+"@tiptap/extension-list-keymap@^2.26.1":
+  version "2.26.1"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-list-keymap/-/extension-list-keymap-2.26.1.tgz"
+  integrity sha512-fl4uKpcPEt0SdYurcnGhJ3aTJvjo4WaeNYE2wY3SDvdBNjk95vU9wDH6iQEhhC9nzu/kvPvONMNiPjNdSoWzSg==
+
 "@tiptap/extension-mention@^2.26.1":
   version "2.26.1"
   resolved "https://registry.npmmirror.com/@tiptap/extension-mention/-/extension-mention-2.26.1.tgz"

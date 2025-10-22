@@ -65,6 +65,7 @@
     "@tiptap/extension-task-list": "^2.26.1",
     "@tiptap/extension-text-align": "^2.26.1",
     "@tiptap/extension-text-style": "^2.26.1",
+    "@tiptap/extension-list-keymap": "^2.26.1",
     "@tiptap/extension-underline": "^2.26.1",
     "@tiptap/pm": "^2.26.1",
     "@tiptap/starter-kit": "^2.26.1",
