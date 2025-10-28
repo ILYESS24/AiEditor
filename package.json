@@ -10,11 +10,13 @@
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
+  "umd": "./dist/index.umd.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
       "import": "./dist/index.js",
+      "umd": "./dist/index.umd.js",
       "types": "./dist/index.d.ts"
     },
     "./dist/style.css": {

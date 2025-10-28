@@ -11,7 +11,7 @@ export default defineConfig({
             name: 'aieditor',
             // fileName: (format) => `index.${format}.js`,
             fileName: `index`,
-            formats: ['es', 'cjs']
+            formats: ['es', 'cjs', 'umd']
         },
     },
     plugins: [dts({rollupTypes: true}),
