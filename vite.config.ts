@@ -8,9 +8,17 @@ export default defineConfig({
         minify: "esbuild",
         lib: {
             entry: resolve(__dirname, './src/index.ts'),
-            name: 'aieditor',
-            // fileName: (format) => `index.${format}.js`,
-            fileName: `index`,
+            name: 'AiEditor',
+            fileName: (format) => {
+                if (format === 'umd') {
+                    return 'index.umd.js';
+                } else if (format === 'cjs') {
+                    return 'index.cjs';
+                } else {
+                    return 'index.js'; // esm
+                }
+            },
+            // fileName: `index`,
             formats: ['es', 'cjs', 'umd']
         },
     },

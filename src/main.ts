@@ -50,6 +50,11 @@ window.aiEditor = new AiEditor({
     //     // console.log("counter", text)
     //     return text.length;
     // },
+
+    attachment:{
+        uploadUrl: "/v1/upload/image",
+    },
+
     link: {
         //[Edit, UnLink, Visit]
         bubbleMenuItems: ["Edit", "UnLink", "visit"],
