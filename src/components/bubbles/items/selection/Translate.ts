@@ -18,13 +18,13 @@ type Holder = {
 
 
 export const defaultTranslateMenuItems = [
-    {title: '英语'},
-    {title: '中文'},
-    {title: '日语'},
-    {title: '法语'},
-    {title: '德语'},
-    {title: '葡萄牙语'},
-    {title: '西班牙语'},
+    {title: 'English'},
+    {title: 'Chinese'},
+    {title: 'Japanese'},
+    {title: 'French'},
+    {title: 'German'},
+    {title: 'Portuguese'},
+    {title: 'Spanish'},
 ] as TranslateMenuItem[]
 
 const startChat = (holder: Holder, lang: string, textarea: HTMLTextAreaElement) => {
@@ -34,8 +34,8 @@ const startChat = (holder: Holder, lang: string, textarea: HTMLTextAreaElement) 
         const {selection, doc} = holder.editor!.state
         const selectedText = doc.textBetween(selection.from, selection.to);
         let prompt = holder.editor?.aiEditor.options.ai?.translate?.prompt?.(lang, selectedText)
-            || `你是一个${lang}翻译专家，精通多个国家的语言，请帮我把以下 <content> 标签里内容翻译为: ${lang}，并返回翻译后结果。您需要翻译的内容是：\n<content>${selectedText}</content>`;
-        const aiModel = AiModelManager.get("auto");
+            || `You are a ${lang} translation expert, proficient in multiple languages. Please help me translate the content in the following <content> tag to: ${lang}, and return the translated result. The content you need to translate is:\n<content>${selectedText}</content>`;
+        const aiModel = AiModelManager.get("openrouter");
         if (aiModel) {
             const smoothAppender = new SmoothAppender(30, textarea)
             aiModel.chat("", prompt, {

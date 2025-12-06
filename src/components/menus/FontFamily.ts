@@ -5,12 +5,12 @@ import {t} from "i18next";
 
 
 const fontFamilies: NameAndValue[] = [
-    {name: "宋体", value: "SimSun"},
-    {name: "仿宋", value: "FangSong"},
-    {name: "黑体", value: "SimHei"},
-    {name: "楷体", value: "KaiTi"},
-    {name: "微软雅黑", value: "Microsoft YaHei"},
-    {name: "方正仿宋简体_GBK", value: "FangSong_GB2312"},
+    {name: "SimSun", value: "SimSun"},
+    {name: "FangSong", value: "FangSong"},
+    {name: "SimHei", value: "SimHei"},
+    {name: "KaiTi", value: "KaiTi"},
+    {name: "Microsoft YaHei", value: "Microsoft YaHei"},
+    {name: "FangSong GB2312", value: "FangSong_GB2312"},
     {name: "Arial", value: "Arial"},
 ]
 

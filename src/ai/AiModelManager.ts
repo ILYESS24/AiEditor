@@ -6,6 +6,12 @@ import {CustomAiModel} from "./custom/CustomAiModel.ts";
 import {OpenaiAiModel} from "./openai/OpenaiAiModel.ts";
 import {InnerEditor} from "../core/AiEditor.ts";
 import {GiteeAiModel} from "./gitee/GiteeAiModel.ts";
+import {OpenRouterAiModel} from "./openrouter/OpenRouterAiModel.ts";
+import {GeminiAiModel} from "./gemini/GeminiAiModel.ts";
+import {ClaudeAiModel} from "./claude/ClaudeAiModel.ts";
+import {DeepSeekAiModel} from "./deepseek/DeepSeekAiModel.ts";
+import {OllamaAiModel} from "./ollama/OllamaAiModel.ts";
+import {GrokAiModel} from "./grok/GrokAiModel.ts";
 
 export class AiModelManager {
 
@@ -23,6 +29,24 @@ export class AiModelManager {
                         break;
                     case "openai":
                         this.set(key, new OpenaiAiModel(editor, globalConfig))
+                        break;
+                    case "openrouter":
+                        this.set(key, new OpenRouterAiModel(editor, globalConfig))
+                        break;
+                    case "gemini":
+                        this.set(key, new GeminiAiModel(editor, globalConfig))
+                        break;
+                    case "claude":
+                        this.set(key, new ClaudeAiModel(editor, globalConfig))
+                        break;
+                    case "deepseek":
+                        this.set(key, new DeepSeekAiModel(editor, globalConfig))
+                        break;
+                    case "ollama":
+                        this.set(key, new OllamaAiModel(editor, globalConfig))
+                        break;
+                    case "grok":
+                        this.set(key, new GrokAiModel(editor, globalConfig))
                         break;
                     case "gitee":
                         this.set(key, new GiteeAiModel(editor, globalConfig))

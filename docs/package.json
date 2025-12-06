@@ -6,7 +6,8 @@
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
-    "vitepress": "^1.5.0"
+    "vitepress": "^1.5.0",
+    "less": "^4.2.0"
   },
   "dependencies": {
     "aieditor": "^1.2.7"

@@ -79,6 +79,34 @@ please refer to here: https://aieditor.dev/price
 - [ ] Automatically obtain thumbnails when uploading videos
 
 
+## OpenRouter AI Integration
+
+AiEditor supports OpenRouter API for accessing multiple AI models. Here's how to configure it:
+
+```javascript
+const aiEditor = new AiEditor({
+    element: "#editor",
+    ai: {
+        models: {
+            openrouter: {
+                apiKey: "your-openrouter-api-key",
+                model: "anthropic/claude-3-haiku", // or any OpenRouter model
+                maxTokens: 2000,
+                temperature: 0.7
+            }
+        }
+    }
+});
+```
+
+Popular models available through OpenRouter:
+- `anthropic/claude-3-opus` - Claude 3 Opus
+- `anthropic/claude-3-sonnet` - Claude 3 Sonnet
+- `anthropic/claude-3-haiku` - Claude 3 Haiku
+- `openai/gpt-4-turbo-preview` - GPT-4 Turbo
+- `openai/gpt-3.5-turbo` - GPT-3.5 Turbo
+- And many more at [OpenRouter Models](https://openrouter.ai/models)
+
 ## Quick start
 
 Visit the official website: https://aieditor.dev

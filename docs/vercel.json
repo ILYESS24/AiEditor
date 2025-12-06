@@ -1,0 +1,7 @@
+{
+  "buildCommand": "npm run docs:build",
+  "outputDirectory": ".vitepress/dist",
+  "framework": "vitepress",
+  "installCommand": "npm install",
+  "regions": ["fra1"]
+}

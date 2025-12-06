@@ -7,6 +7,12 @@ import {GiteeModelConfig} from "./gitee/GiteeModelConfig.ts";
 import {SparkAiModelConfig} from "./spark/SparkAiModelConfig.ts";
 import {CustomAiModelConfig} from "./custom/CustomAiModelConfig.ts";
 import {WenXinAiModelConfig} from "./wenxin/WenXinAiModelConfig.ts";
+import {OpenRouterModelConfig} from "./openrouter/OpenRouterModelConfig.ts";
+import {GeminiModelConfig} from "./gemini/GeminiModelConfig.ts";
+import {ClaudeModelConfig} from "./claude/ClaudeModelConfig.ts";
+import {DeepSeekModelConfig} from "./deepseek/DeepSeekModelConfig.ts";
+import {OllamaModelConfig} from "./ollama/OllamaModelConfig.ts";
+import {GrokModelConfig} from "./grok/GrokModelConfig.ts";
 
 export interface AiMenu {
     icon: string,
@@ -25,6 +31,12 @@ export interface AiGlobalConfig {
         gitee?: GiteeModelConfig,
         spark?: SparkAiModelConfig,
         wenxin?: WenXinAiModelConfig,
+        openrouter?: OpenRouterModelConfig,
+        gemini?: GeminiModelConfig,
+        claude?: ClaudeModelConfig,
+        deepseek?: DeepSeekModelConfig,
+        ollama?: OllamaModelConfig,
+        grok?: GrokModelConfig,
         custom?: CustomAiModelConfig,
     },
     modelFactory?: AiModelFactory,

@@ -1,11 +1,13 @@
 // import { openai } from "./chatgpt.ts";
 import {AiEditor} from "./core/AiEditor.ts";
+import {AiModelManager} from "./ai/AiModelManager.ts";
 // import { config } from "./spark.ts";
 // import {OpenaiModelConfig} from "./ai/openai/OpenaiModelConfig.ts";
 // @ts-ignore
 window.aiEditor = new AiEditor({
     element: "#aiEditor",
-    placeholder: "点击输入内容1...",
+    placeholder: "Click to input content...",
+    lang: "en",
     contentRetention: true,
     // toolbarSize: 'small',
     // toolbarSize:'large',
@@ -13,7 +15,7 @@ window.aiEditor = new AiEditor({
     // draggable:false,
     // theme: "dark",
     // editable:false,
-    content: 'AiEditor 是一个面向 AI 的下一代富文本编辑器。',
+    content: 'AiEditor is a next-generation rich text editor for AI.',
     // contentIsMarkdown: true,
     textSelectionBubbleMenu: {
         // enable:false
@@ -84,7 +86,7 @@ window.aiEditor = new AiEditor({
     //     values:["1.0","1.1"],
     // },
     // onSave:()=>{
-    //     alert("保存")
+    //     alert("Save")
     //     return true;
     // },
     // image:{
@@ -92,49 +94,14 @@ window.aiEditor = new AiEditor({
     // },
     ai: {
         models: {
-            custom: {
-                url: "https://ai.gitee.com/v1/chat/completions",
-                headers:{},
-                // headers: () => {
-                //     debugger
-                //     return {
-                //         Authorization: "Bearer xxxx",
-                //         'Content-Type': "application/json",
-                //         'X-Failover-Enabled': true,
-                //     }
-                // },
-                wrapPayload: (message: string) => {
-                    const messageObj = {
-                        model: "QwQ-32B",
-                        max_tokens: 2048,
-                        temperature: 0.7,
-                        top_p: 0.8,
-                        top_k: 50,
-                        stream: true,
-                        messages: [
-                            {
-                                role: "user",
-                                content: message,
-                            }
-                        ]
-                    }
-
-                    return JSON.stringify(messageObj)
-                },
-                parseMessage: (message: string) => {
-                    const messageObject = JSON.parse(message);
-                    return {
-                        role: "assistant",
-                        content: messageObject.choices[0].delta?.content || "",
-                        // index: number,
-                        // //0 代表首个文本结果；1 代表中间文本结果；2 代表最后一个文本结果。
-                        // status: 0|1|2,
-                    }
-                },
+            openrouter: {
+                apiKey: "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",
+                model: localStorage.getItem('aiModel') || "anthropic/claude-3-haiku",
+                maxTokens: 2000,
+                temperature: 0.7
             }
         },
-        // bubblePanelEnable:false,
-        // bubblePanelModel: "spark",
+        bubblePanelModel: "openrouter",
         onTokenConsume: (modelName, _modelConfig, count) => {
             console.log(modelName, " token count:" + count)
         },
@@ -166,8 +133,8 @@ window.aiEditor = new AiEditor({
     },
     i18n: {
         zh: {
-            // "undo": "撤销(可自定义国际化内容...)",
-            // "redo": "重做(可自定义国际化内容!)",
+            // "undo": "Undo (customizable i18n content...)",
+            // "redo": "Redo (customizable i18n content!)",
         }
     },
     // onMentionQuery: (query) => {
@@ -213,3 +180,81 @@ window.aiEditor = new AiEditor({
         })
     }
 })
+
+// Gérer le changement de modèle AI - Attendre que l'éditeur soit créé
+function setupAiModelSelector() {
+    const aiModelSelect = document.getElementById('aiModelSelect') as HTMLSelectElement;
+    if (!aiModelSelect) {
+        console.warn('⚠️ AI Model selector not found in DOM');
+        return;
+    }
+    
+    // Récupérer le modèle sauvegardé ou utiliser le modèle par défaut
+    const savedModel = localStorage.getItem('aiModel') || 'anthropic/claude-3-haiku';
+    aiModelSelect.value = savedModel;
+    
+    // Mettre à jour le modèle dans la configuration OpenRouter
+    const updateAiModel = (model: string) => {
+        if (!window.aiEditor) {
+            console.warn('⚠️ AiEditor instance not ready yet');
+            return;
+        }
+        
+        const openrouterConfig = window.aiEditor.options.ai?.models?.openrouter;
+        if (!openrouterConfig) {
+            console.error('❌ OpenRouter configuration not found');
+            return;
+        }
+        
+        // Mettre à jour le modèle dans la configuration globale
+        openrouterConfig.model = model;
+        localStorage.setItem('aiModel', model);
+        
+        // Mettre à jour directement dans l'instance AiModel existante
+        try {
+            const aiModel = AiModelManager.get('openrouter');
+            if (aiModel && aiModel.aiModelConfig) {
+                // Mettre à jour le modèle dans la configuration de l'instance
+                // Cela garantit que le nouveau modèle sera utilisé immédiatement
+                (aiModel.aiModelConfig as any).model = model;
+                console.log('✅ AI Model updated to:', model);
+                console.log('   - Global config updated');
+                console.log('   - Instance config updated');
+            } else {
+                console.warn('⚠️ AI Model instance not found, updating global config only');
+            }
+        } catch (error) {
+            console.error('❌ Error updating AI model:', error);
+        }
+    };
+    
+    // Initialiser avec le modèle sauvegardé - réessayer plusieurs fois si nécessaire
+    let retries = 0;
+    const maxRetries = 10;
+    const initModel = () => {
+        if (window.aiEditor && window.aiEditor.options.ai?.models?.openrouter) {
+            updateAiModel(savedModel);
+        } else if (retries < maxRetries) {
+            retries++;
+            setTimeout(initModel, 200);
+        } else {
+            console.error('❌ Failed to initialize AI model after multiple retries');
+        }
+    };
+    initModel();
+    
+    // Écouter les changements
+    aiModelSelect.addEventListener('change', (e) => {
+        const selectedModel = (e.target as HTMLSelectElement).value;
+        updateAiModel(selectedModel);
+    });
+}
+
+// Attendre que le DOM soit chargé et que l'éditeur soit créé
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(setupAiModelSelector, 300);
+    });
+} else {
+    setTimeout(setupAiModelSelector, 300);
+}

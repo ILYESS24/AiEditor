@@ -43,7 +43,7 @@ export const resize = (editor: Editor
             newWidth = minWidth;
         }
 
-        //及时修改 image 节点宽度，再拖动结束后再通知渲染视图
+        // Update image node width in time, then notify the view to render after dragging ends
         imgRef.style.width = `${newWidth}px`;
         imgRef.setAttribute("data-width", newWidth.toString())
 
