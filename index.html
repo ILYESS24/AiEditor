@@ -13,6 +13,27 @@
                 padding: 0;
                 overflow: hidden;
                 font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                background: #1a1a1a; /* Dark background for the floating card effect */
+            }
+
+            .page-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                padding: 15px; /* Space between the rounded frame and content (10-20px) */
+                box-sizing: border-box;
+                background: #1a1a1a; /* Dark background behind the card */
+            }
+
+            .editor-card {
+                width: 100%;
+                height: 100%;
+                background: white;
+                border-radius: 35px; /* Strongly rounded corners (30-40px) */
+                overflow: hidden;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* Floating card shadow effect */
             }
 
             .aie-theme-light {
@@ -28,9 +49,9 @@
             }
 
             .ai-model-selector {
-                position: fixed;
-                top: 10px;
-                right: 10px;
+                position: absolute;
+                top: 20px;
+                right: 20px;
                 z-index: 10000;
                 background: white;
                 border: 1px solid #e5e7eb;
@@ -89,21 +110,25 @@
 </head>
 <body>
 
-<div class="ai-model-selector">
-    <label for="aiModelSelect">AI Model:</label>
-    <select id="aiModelSelect">
-        <option value="anthropic/claude-3-haiku">Claude 3 Haiku (Fast)</option>
-        <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet (Balanced)</option>
-        <option value="anthropic/claude-3-opus">Claude 3 Opus (Best)</option>
-        <option value="openai/gpt-4-turbo-preview">GPT-4 Turbo</option>
-        <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
-        <option value="google/gemini-pro">Google Gemini Pro</option>
-        <option value="meta-llama/llama-2-70b-chat">Llama 2 70B</option>
-        <option value="mistralai/mistral-medium">Mistral Medium</option>
-    </select>
-</div>
+    <div class="page-container">
+        <div class="editor-card">
+            <div class="ai-model-selector">
+                <label for="aiModelSelect">AI Model:</label>
+                <select id="aiModelSelect">
+                    <option value="anthropic/claude-3-haiku">Claude 3 Haiku (Fast)</option>
+                    <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet (Balanced)</option>
+                    <option value="anthropic/claude-3-opus">Claude 3 Opus (Best)</option>
+                    <option value="openai/gpt-4-turbo-preview">GPT-4 Turbo</option>
+                    <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    <option value="google/gemini-pro">Google Gemini Pro</option>
+                    <option value="meta-llama/llama-2-70b-chat">Llama 2 70B</option>
+                    <option value="mistralai/mistral-medium">Mistral Medium</option>
+                </select>
+            </div>
 
-<div id="aiEditor" style="height: 100vh; margin: 0"></div>
+            <div id="aiEditor" style="height: 100vh; margin: 0"></div>
+        </div>
+    </div>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
