@@ -123,18 +123,48 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
         const aiMenu = this.menuData[index];
         const selectedText = this.getSelectedText(aiMenu.text!);
 
+        // Utiliser le modèle actuellement sélectionné dans le dropdown au lieu du modèle par défaut
+        const currentModel = localStorage.getItem('aiModel') || 'anthropic/claude-3-haiku';
+
         console.log('🎯 AI Feature clicked:', aiMenu.name);
         console.log('📝 Selected text:', selectedText ? selectedText.substring(0, 50) + '...' : 'none');
-        console.log('🤖 Model:', aiMenu.model);
+        console.log('🤖 Current selected model:', currentModel);
+        console.log('🔧 Using OpenRouter with model:', currentModel);
 
         if (selectedText) {
-            const aiModel = AiModelManager.get(aiMenu.model!);
-            console.log('🔍 AI Model found:', !!aiModel);
+            // Toujours utiliser OpenRouter, mais avec le modèle sélectionné
+            const aiModel = AiModelManager.get("openrouter");
+            console.log('🔍 OpenRouter AI Model found:', !!aiModel);
+
             if (aiModel) {
-                console.log('🚀 Starting AI chat...');
-                aiModel?.chat(selectedText, aiMenu.prompt!, new DefaultAiMessageListener(this.editor!));
+                // Mettre à jour temporairement le modèle dans la configuration pour cette requête
+                const originalModel = aiModel.aiModelConfig.model;
+                aiModel.aiModelConfig.model = currentModel;
+
+                console.log('🚀 Starting AI chat with model:', currentModel);
+                console.log('📋 Prompt:', aiMenu.prompt!.substring(0, 100) + '...');
+
+                aiModel?.chat(selectedText, aiMenu.prompt!, {
+                    onStart: (aiClient) => {
+                        console.log('✅ AI chat started with client:', aiClient);
+                        // Afficher un indicateur de chargement si nécessaire
+                    },
+                    onStop: () => {
+                        console.log('🛑 AI chat completed');
+                        // Restaurer le modèle original
+                        aiModel.aiModelConfig.model = originalModel;
+                    },
+                    onMessage: (message) => {
+                        console.log('💬 AI response received:', message.content.substring(0, 50) + '...');
+                    },
+                    onError: (error) => {
+                        console.error('❌ AI chat error:', error);
+                        // Restaurer le modèle original en cas d'erreur
+                        aiModel.aiModelConfig.model = originalModel;
+                    }
+                } as any);
             } else {
-                console.error("❌ Ai model config error.")
+                console.error("❌ OpenRouter AI model not found")
             }
 
         } else {
