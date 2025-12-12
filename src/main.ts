@@ -17,11 +17,6 @@ window.aiEditor = new AiEditor({
     // editable:false,
     content: 'AiEditor is a next-generation rich text editor for AI.',
     // contentIsMarkdown: true,
-    textSelectionBubbleMenu: {
-        // enable:false
-        //[AI, Bold, Italic, Underline, Strike, Code]
-        // items: ["ai", "Bold", "Italic", "Underline", "Strike", "code"],
-    },
 
     container: {
         defaultType: "default",
@@ -60,10 +55,13 @@ window.aiEditor = new AiEditor({
     link: {
         //[Edit, UnLink, Visit]
         bubbleMenuItems: ["Edit", "UnLink", "visit"],
-    },
-    selectionBubbleMenu: {
-        items: ["translate", "ai-continuation", "ai-optimization", "ai-proofreading"],
-    },
+        },
+        bubblePanelMenus: [
+            "translate",
+            "ai-continuation",
+            "ai-optimization",
+            "ai-proofreading"
+        ],
     codeBlock: {
         languages: [
             {name: 'Auto', value: 'auto'},
