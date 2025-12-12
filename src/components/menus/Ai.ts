@@ -144,25 +144,14 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
                 console.log('🚀 Starting AI chat with model:', currentModel);
                 console.log('📋 Prompt:', aiMenu.prompt!.substring(0, 100) + '...');
 
-                aiModel?.chat(selectedText, aiMenu.prompt!, {
-                    onStart: (aiClient) => {
-                        console.log('✅ AI chat started with client:', aiClient);
-                        // Afficher un indicateur de chargement si nécessaire
-                    },
-                    onStop: () => {
-                        console.log('🛑 AI chat completed');
-                        // Restaurer le modèle original
-                        aiModel.aiModelConfig.model = originalModel;
-                    },
-                    onMessage: (message) => {
-                        console.log('💬 AI response received:', message.content.substring(0, 50) + '...');
-                    },
-                    onError: (error) => {
-                        console.error('❌ AI chat error:', error);
-                        // Restaurer le modèle original en cas d'erreur
-                        aiModel.aiModelConfig.model = originalModel;
-                    }
-                } as any);
+                // Utiliser DefaultAiMessageListener pour une expérience fluide
+                const messageListener = new DefaultAiMessageListener(this.editor!);
+                aiModel?.chat(selectedText, aiMenu.prompt!, messageListener);
+
+                // Restaurer le modèle original immédiatement après l'appel
+                setTimeout(() => {
+                    aiModel.aiModelConfig.model = originalModel;
+                }, 100);
             } else {
                 console.error("❌ OpenRouter AI model not found")
             }
