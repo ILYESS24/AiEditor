@@ -123,16 +123,22 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
         const aiMenu = this.menuData[index];
         const selectedText = this.getSelectedText(aiMenu.text!);
 
+        console.log('🎯 AI Feature clicked:', aiMenu.name);
+        console.log('📝 Selected text:', selectedText ? selectedText.substring(0, 50) + '...' : 'none');
+        console.log('🤖 Model:', aiMenu.model);
+
         if (selectedText) {
             const aiModel = AiModelManager.get(aiMenu.model!);
+            console.log('🔍 AI Model found:', !!aiModel);
             if (aiModel) {
+                console.log('🚀 Starting AI chat...');
                 aiModel?.chat(selectedText, aiMenu.prompt!, new DefaultAiMessageListener(this.editor!));
             } else {
-                console.error("Ai model config error.")
+                console.error("❌ Ai model config error.")
             }
 
         } else {
-            console.error("Can not get selected text.")
+            console.error("❌ Can not get selected text.")
         }
     }
 

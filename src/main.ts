@@ -105,6 +105,14 @@ window.aiEditor = new AiEditor({
         onTokenConsume: (modelName, _modelConfig, count) => {
             console.log(modelName, " token count:" + count)
         },
+        // Forcer la mise à jour du modèle à chaque utilisation
+        onBeforeAiCall: () => {
+            const currentModel = localStorage.getItem('aiModel') || 'anthropic/claude-3-haiku';
+            if (window.aiEditor && window.aiEditor.options.ai?.models?.openrouter) {
+                window.aiEditor.options.ai.models.openrouter.model = currentModel;
+                console.log('🔄 AI Model synced to:', currentModel);
+            }
+        },
         // bubblePanelMenus: [
         //     {
         //         prompt: `<content>{content}</content>\n请帮我优化一下这段内容，并直接返回优化后的结果。\n注意：你应该先判断一下这句话是中文还是英文，如果是中文，请给我返回中文的内容，如果是英文，请给我返回英文内容，只需要返回内容即可，不需要告知我是中文还是英文。`,

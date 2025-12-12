@@ -33,25 +33,33 @@ const startChat = (holder: Holder, lang: string, textarea: HTMLTextAreaElement) 
     } else {
         const {selection, doc} = holder.editor!.state
         const selectedText = doc.textBetween(selection.from, selection.to);
+        console.log('🌐 Translation started for language:', lang);
+        console.log('📝 Selected text:', selectedText ? selectedText.substring(0, 50) + '...' : 'none');
+
         let prompt = holder.editor?.aiEditor.options.ai?.translate?.prompt?.(lang, selectedText)
             || `You are a ${lang} translation expert, proficient in multiple languages. Please help me translate the content in the following <content> tag to: ${lang}, and return the translated result. The content you need to translate is:\n<content>${selectedText}</content>`;
         const aiModel = AiModelManager.get("openrouter");
+        console.log('🔍 Translation AI Model found:', !!aiModel);
         if (aiModel) {
+            console.log('🚀 Starting translation...');
             const smoothAppender = new SmoothAppender(30, textarea)
             aiModel.chat("", prompt, {
                 onStart(aiClient) {
                     holder.aiClient = aiClient;
+                    console.log('✅ Translation AI client started');
                 },
                 onStop() {
                     holder.aiClient = undefined;
                     smoothAppender.finished();
+                    console.log('🛑 Translation completed');
                 },
                 onMessage(message) {
+                    console.log('💬 Translation message received:', message.content.substring(0, 30) + '...');
                     smoothAppender.appendText(message.content);
                 }
             })
         } else {
-            console.error("AI model name config error.")
+            console.error("❌ AI model name config error for translation.")
         }
     }
 }
