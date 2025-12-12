@@ -181,3 +181,81 @@ window.aiEditor = new AiEditor({
     }
 })
 
+// Gérer le changement de modèle AI - Attendre que l'éditeur soit créé
+function setupAiModelSelector() {
+    const aiModelSelect = document.getElementById('aiModelSelect') as HTMLSelectElement;
+    if (!aiModelSelect) {
+        console.warn('⚠️ AI Model selector not found in DOM');
+        return;
+    }
+
+    // Récupérer le modèle sauvegardé ou utiliser le modèle par défaut
+    const savedModel = localStorage.getItem('aiModel') || 'anthropic/claude-3-haiku';
+    aiModelSelect.value = savedModel;
+
+    // Mettre à jour le modèle dans la configuration OpenRouter
+    const updateAiModel = (model: string) => {
+        if (!window.aiEditor) {
+            console.warn('⚠️ AiEditor instance not ready yet');
+            return;
+        }
+
+        const openrouterConfig = window.aiEditor.options.ai?.models?.openrouter;
+        if (!openrouterConfig) {
+            console.error('❌ OpenRouter configuration not found');
+            return;
+        }
+
+        // Mettre à jour le modèle dans la configuration globale
+        openrouterConfig.model = model;
+        localStorage.setItem('aiModel', model);
+
+        // Mettre à jour directement dans l'instance AiModel existante
+        try {
+            const aiModel = AiModelManager.get('openrouter');
+            if (aiModel && aiModel.aiModelConfig) {
+                // Mettre à jour le modèle dans la configuration de l'instance
+                // Cela garantit que le nouveau modèle sera utilisé immédiatement
+                (aiModel.aiModelConfig as any).model = model;
+                console.log('✅ AI Model updated to:', model);
+                console.log('   - Global config updated');
+                console.log('   - Instance config updated');
+            } else {
+                console.warn('⚠️ AI Model instance not found, updating global config only');
+            }
+        } catch (error) {
+            console.error('❌ Error updating AI model:', error);
+        }
+    };
+
+    // Initialiser avec le modèle sauvegardé - réessayer plusieurs fois si nécessaire
+    let retries = 0;
+    const maxRetries = 10;
+    const initModel = () => {
+        if (window.aiEditor && window.aiEditor.options.ai?.models?.openrouter) {
+            updateAiModel(savedModel);
+        } else if (retries < maxRetries) {
+            retries++;
+            setTimeout(initModel, 200);
+        } else {
+            console.error('❌ Failed to initialize AI model after multiple retries');
+        }
+    };
+    initModel();
+
+    // Écouter les changements
+    aiModelSelect.addEventListener('change', (e) => {
+        const selectedModel = (e.target as HTMLSelectElement).value;
+        updateAiModel(selectedModel);
+    });
+}
+
+// Attendre que le DOM soit chargé et que l'éditeur soit créé
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(setupAiModelSelector, 300);
+    });
+} else {
+    setTimeout(setupAiModelSelector, 300);
+}
+
