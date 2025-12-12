@@ -18,8 +18,12 @@ export class AiModelManager {
     private static models: Record<string, AiModel> = {};
 
     static init(editor: InnerEditor, globalConfig: AiGlobalConfig) {
+        console.log('🏗️ Initializing AI Model Manager...');
+        console.log('📋 Available models config:', globalConfig?.models);
+
         if (globalConfig && globalConfig.models) {
             for (let key of Object.keys(globalConfig.models)) {
+                console.log(`🔧 Creating AI model: ${key}`);
                 switch (key) {
                     case "spark":
                         this.set(key, new SparkAiModel(editor, globalConfig))
@@ -31,7 +35,10 @@ export class AiModelManager {
                         this.set(key, new OpenaiAiModel(editor, globalConfig))
                         break;
                     case "openrouter":
-                        this.set(key, new OpenRouterAiModel(editor, globalConfig))
+                        console.log('🚀 Creating OpenRouter model...');
+                        const openRouterModel = new OpenRouterAiModel(editor, globalConfig);
+                        this.set(key, openRouterModel);
+                        console.log('✅ OpenRouter model created:', openRouterModel);
                         break;
                     case "gemini":
                         this.set(key, new GeminiAiModel(editor, globalConfig))
@@ -60,13 +67,27 @@ export class AiModelManager {
                 }
             }
         }
+
+        console.log('📦 All AI models initialized:', this.models);
     }
 
     static get(modelName: string): AiModel {
+        console.log(`🔍 Getting AI model: "${modelName}"`);
+        console.log('📋 Available models:', Object.keys(this.models));
+
         if (!modelName || modelName === "auto") {
             modelName = Object.keys(this.models)[0];
+            console.log(`🎯 Using auto-selected model: "${modelName}"`);
         }
-        return this.models[modelName];
+
+        const model = this.models[modelName];
+        console.log(`📤 Returning model "${modelName}":`, !!model);
+
+        if (model) {
+            console.log('🔧 Model config:', model.aiModelConfig);
+        }
+
+        return model;
     }
 
     static set(modelName: string, aiModel: AiModel) {

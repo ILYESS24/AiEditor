@@ -197,12 +197,17 @@ function setupAiModelSelector() {
         return;
     }
 
+    console.log('🎛️ AI Model selector initialized');
+
     // Récupérer le modèle sauvegardé ou utiliser le modèle par défaut
     const savedModel = localStorage.getItem('aiModel') || 'anthropic/claude-3-haiku';
     aiModelSelect.value = savedModel;
+    console.log('📋 Current saved model:', savedModel);
 
     // Mettre à jour le modèle dans la configuration OpenRouter
     const updateAiModel = (model: string) => {
+        console.log('🔄 Updating AI model to:', model);
+
         if (!window.aiEditor) {
             console.warn('⚠️ AiEditor instance not ready yet');
             return;
@@ -211,25 +216,37 @@ function setupAiModelSelector() {
         const openrouterConfig = window.aiEditor.options.ai?.models?.openrouter;
         if (!openrouterConfig) {
             console.error('❌ OpenRouter configuration not found');
+            console.log('Available AI config:', window.aiEditor.options.ai);
             return;
         }
+
+        console.log('⚙️ Current OpenRouter config:', openrouterConfig);
 
         // Mettre à jour le modèle dans la configuration globale
         openrouterConfig.model = model;
         localStorage.setItem('aiModel', model);
 
+        console.log('✅ Global config updated to model:', model);
+
         // Mettre à jour directement dans l'instance AiModel existante
         try {
             const aiModel = AiModelManager.get('openrouter');
-            if (aiModel && aiModel.aiModelConfig) {
-                // Mettre à jour le modèle dans la configuration de l'instance
-                // Cela garantit que le nouveau modèle sera utilisé immédiatement
-                (aiModel.aiModelConfig as any).model = model;
-                console.log('✅ AI Model updated to:', model);
-                console.log('   - Global config updated');
-                console.log('   - Instance config updated');
+            console.log('🔍 AI Model instance found:', !!aiModel);
+            if (aiModel) {
+                console.log('📊 AI Model config before update:', aiModel.aiModelConfig);
+                if (aiModel.aiModelConfig) {
+                    // Mettre à jour le modèle dans la configuration de l'instance
+                    (aiModel.aiModelConfig as any).model = model;
+                    console.log('✅ AI Model updated to:', model);
+                    console.log('   - Global config updated');
+                    console.log('   - Instance config updated');
+                    console.log('📊 AI Model config after update:', aiModel.aiModelConfig);
+                } else {
+                    console.warn('⚠️ AI Model config not found in instance');
+                }
             } else {
                 console.warn('⚠️ AI Model instance not found, updating global config only');
+                console.log('Available models in AiModelManager:', AiModelManager.getAllModels?.() || 'N/A');
             }
         } catch (error) {
             console.error('❌ Error updating AI model:', error);
@@ -241,12 +258,16 @@ function setupAiModelSelector() {
     const maxRetries = 10;
     const initModel = () => {
         if (window.aiEditor && window.aiEditor.options.ai?.models?.openrouter) {
+            console.log('🚀 Initializing AI model...');
             updateAiModel(savedModel);
         } else if (retries < maxRetries) {
             retries++;
+            console.log(`⏳ Waiting for AiEditor (${retries}/${maxRetries})...`);
             setTimeout(initModel, 200);
         } else {
             console.error('❌ Failed to initialize AI model after multiple retries');
+            console.log('AiEditor available:', !!window.aiEditor);
+            console.log('AI options:', window.aiEditor?.options?.ai);
         }
     };
     initModel();
@@ -254,6 +275,7 @@ function setupAiModelSelector() {
     // Écouter les changements
     aiModelSelect.addEventListener('change', (e) => {
         const selectedModel = (e.target as HTMLSelectElement).value;
+        console.log('🎯 AI Model changed via selector to:', selectedModel);
         updateAiModel(selectedModel);
     });
 }
