@@ -130,34 +130,87 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
         console.log('📝 Selected text:', selectedText ? selectedText.substring(0, 50) + '...' : 'none');
         console.log('🤖 Current selected model:', currentModel);
         console.log('🔧 Using OpenRouter with model:', currentModel);
+        console.log('📋 Full prompt:', aiMenu.prompt);
+        console.log('🎯 Editor available:', !!this.editor);
 
-        if (selectedText) {
-            // Toujours utiliser OpenRouter, mais avec le modèle sélectionné
-            const aiModel = AiModelManager.get("openrouter");
-            console.log('🔍 OpenRouter AI Model found:', !!aiModel);
+        if (!selectedText) {
+            console.error("❌ Can not get selected text.");
+            alert("Veuillez sélectionner du texte d'abord !");
+            return;
+        }
 
-            if (aiModel) {
-                // Mettre à jour temporairement le modèle dans la configuration pour cette requête
-                const originalModel = aiModel.aiModelConfig.model;
-                aiModel.aiModelConfig.model = currentModel;
+        if (!this.editor) {
+            console.error("❌ Editor not available");
+            return;
+        }
 
-                console.log('🚀 Starting AI chat with model:', currentModel);
-                console.log('📋 Prompt:', aiMenu.prompt!.substring(0, 100) + '...');
+        // Toujours utiliser OpenRouter, mais avec le modèle sélectionné
+        const aiModel = AiModelManager.get("openrouter");
+        console.log('🔍 OpenRouter AI Model found:', !!aiModel);
 
-                // Utiliser DefaultAiMessageListener pour une expérience fluide
-                const messageListener = new DefaultAiMessageListener(this.editor!);
-                aiModel?.chat(selectedText, aiMenu.prompt!, messageListener);
+        if (!aiModel) {
+            console.error("❌ OpenRouter AI model not found");
+            alert("Erreur : Modèle AI non disponible");
+            return;
+        }
 
-                // Restaurer le modèle original immédiatement après l'appel
-                setTimeout(() => {
+        try {
+            // Mettre à jour temporairement le modèle dans la configuration pour cette requête
+            const originalModel = aiModel.aiModelConfig.model;
+            aiModel.aiModelConfig.model = currentModel;
+
+            console.log('🚀 Starting AI chat with model:', currentModel);
+            console.log('📋 Final prompt:', aiMenu.prompt!.substring(0, 100) + '...');
+            console.log('📝 Text to process:', selectedText.substring(0, 100) + '...');
+
+            // Créer un message listener personnalisé qui insère directement
+            const messageListener = {
+                onStart: (aiClient: any) => {
+                    console.log('✅ AI chat started successfully');
+                },
+                onStop: () => {
+                    console.log('🛑 AI chat completed');
+                    // Restaurer le modèle original
                     aiModel.aiModelConfig.model = originalModel;
-                }, 100);
-            } else {
-                console.error("❌ OpenRouter AI model not found")
-            }
+                },
+                onMessage: (message: any) => {
+                    console.log('💬 AI response received:', message.content);
 
-        } else {
-            console.error("❌ Can not get selected text.")
+                    if (message.content && message.content.trim()) {
+                        // Insérer directement le contenu à la position du curseur
+                        const { state } = this.editor!;
+                        const { selection } = state;
+
+                        // Créer une nouvelle sélection après le texte sélectionné
+                        const endPos = selection.to;
+                        const newSelection = {
+                            from: endPos,
+                            to: endPos
+                        };
+
+                        // Insérer le contenu
+                        this.editor!.chain()
+                            .setTextSelection(newSelection)
+                            .insertContent(message.content.trim())
+                            .run();
+
+                        console.log('✅ Content inserted successfully');
+                    }
+                },
+                onError: (error: any) => {
+                    console.error('❌ AI chat error:', error);
+                    alert('Erreur AI : ' + error.message);
+                    // Restaurer le modèle original en cas d'erreur
+                    aiModel.aiModelConfig.model = originalModel;
+                }
+            };
+
+            // Lancer l'appel AI
+            aiModel.chat(selectedText, aiMenu.prompt!, messageListener);
+
+        } catch (error) {
+            console.error('❌ Unexpected error:', error);
+            alert('Erreur inattendue : ' + error.message);
         }
     }
 
