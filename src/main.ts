@@ -61,6 +61,9 @@ window.aiEditor = new AiEditor({
         //[Edit, UnLink, Visit]
         bubbleMenuItems: ["Edit", "UnLink", "visit"],
     },
+    selectionBubbleMenu: {
+        items: ["translate", "ai-continuation", "ai-optimization", "ai-proofreading"],
+    },
     codeBlock: {
         languages: [
             {name: 'Auto', value: 'auto'},
@@ -113,12 +116,6 @@ window.aiEditor = new AiEditor({
                 console.log('🔄 AI Model synced to:', currentModel);
             }
         },
-        bubblePanelMenus: [
-            "translate",
-            "ai-continuation",
-            "ai-optimization",
-            "ai-proofreading"
-        ],
 
 
     },
