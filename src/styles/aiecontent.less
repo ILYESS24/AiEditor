@@ -4,9 +4,21 @@
   padding: 10px;
   margin: 0;
   color: var(--aie-text-color);
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 
   & > :first-child {
     margin-top: 0;
+  }
+
+  // Mobile optimizations
+  @media (max-width: 768px) {
+    padding: 12px;
+    font-size: 16px; // Prevents iOS zoom on input focus
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
   }
 
   &::-webkit-scrollbar{  width: 4px; }
@@ -102,6 +114,18 @@
     letter-spacing: -.02em;
     line-height: 40px;
     font-size: 32px;
+
+    @media (max-width: 768px) {
+      font-size: 26px;
+      line-height: 34px;
+      padding-top: 18px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 22px;
+      line-height: 30px;
+      padding-top: 14px;
+    }
   }
 
   h2 {
@@ -109,6 +133,18 @@
     letter-spacing: -.02em;
     line-height: 32px;
     font-size: 24px;
+
+    @media (max-width: 768px) {
+      font-size: 20px;
+      line-height: 28px;
+      padding-top: 18px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+      line-height: 26px;
+      padding-top: 14px;
+    }
   }
 
   h3 {
@@ -116,6 +152,18 @@
     letter-spacing: -.01em;
     line-height: 28px;
     font-size: 20px;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+      line-height: 24px;
+      margin: 24px 0 0;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 16px;
+      line-height: 22px;
+      margin: 20px 0 0;
+    }
   }
 
   strong {
@@ -128,6 +176,13 @@
     overflow: hidden;
     table-layout: fixed;
     width: 100%;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
     img {
       // 让表格里的图片拖动超出范围时依然可以拖动

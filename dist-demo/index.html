@@ -2,135 +2,336 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>AiEditor Demo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                background: #1a1a1a; /* Dark background for the floating card effect */
-            }
-
-            .page-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                padding: 15px; /* Space between the rounded frame and content (10-20px) */
-                box-sizing: border-box;
-                background: #1a1a1a; /* Dark background behind the card */
-            }
-
-            .editor-card {
-                width: 100%;
-                height: 100%;
-                background: white;
-                border-radius: 35px; /* Strongly rounded corners (30-40px) */
-                overflow: hidden;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* Floating card shadow effect */
-            }
-
-            .aie-theme-light {
-                --my-default-color: #fafafa;
-            }
-
-            .aie-theme-dark {
-                --my-default-color: #333;
-            }
-
-            .aie-container div.default{
-                background: var(--my-default-color);
-            }
-
-            .ai-model-selector {
-                position: absolute;
-                top: 20px;
-                right: 28px;
-                z-index: 10000;
-                background: white;
-                border: 1px solid #e5e7eb;
-                border-radius: 8px;
-                padding: 12px 16px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                font-family: 'Poppins', sans-serif;
-            }
-
-            .ai-model-selector label {
-                display: block;
-                font-size: 12px;
-                font-weight: 600;
-                color: #374151;
-                margin-bottom: 8px;
-            }
-
-            .ai-model-selector select {
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                font-family: 'Poppins', sans-serif;
-                background: white;
-                color: #111827;
-                cursor: pointer;
-                transition: border-color 0.2s;
-            }
-
-            .ai-model-selector select:hover {
-                border-color: #9ca3af;
-            }
-
-            .ai-model-selector select:focus {
-                outline: none;
-                border-color: #2563eb;
-                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            }
-
-            .aie-theme-dark .ai-model-selector {
-                background: #1f2937;
-                border-color: #374151;
-            }
-
-            .aie-theme-dark .ai-model-selector label {
-                color: #e5e7eb;
-            }
-
-            .aie-theme-dark .ai-model-selector select {
-                background: #374151;
-                border-color: #4b5563;
-                color: #e5e7eb;
-            }
-
-        </style>
-  <script type="module" crossorigin src="/assets/main-Df9TsaRI.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-CjIOFP40.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+    <meta name="theme-color" content="#2563eb"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="AiEditor"/>
+    <meta name="description" content="AiEditor - Next-generation AI-powered rich text editor with multi-model support including GPT-4, Claude, Gemini, and more."/>
+    <meta name="keywords" content="AI editor, rich text editor, GPT-4, Claude, Gemini, writing assistant, markdown editor"/>
+    <meta name="author" content="AiEditor Team"/>
+    <meta name="robots" content="index, follow"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://aieditor.pages.dev/"/>
+    <meta property="og:title" content="AiEditor - AI-Powered Rich Text Editor"/>
+    <meta property="og:description" content="Next-generation AI-powered rich text editor with multi-model support"/>
+    <meta property="og:image" content="/icons/icon-512x512.png"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.svg"/>
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192x192.svg"/>
+    
+    <!-- DNS Prefetch for faster external resource loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com"/>
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com"/>
+    <link rel="dns-prefetch" href="https://openrouter.ai"/>
+    
+    <!-- Preconnect for critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link rel="preconnect" href="https://openrouter.ai"/>
+    
+    <title>AiEditor - AI-Powered Rich Text Editor</title>
+    
+    <!-- Critical CSS inlined for faster First Contentful Paint -->
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-dark: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #9ca3af;
+            --border: #e5e7eb;
+            --radius: 8px;
+        }
+        
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        html,body{margin:0;padding:0;overflow:hidden;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg-dark);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        
+        /* Loading overlay */
+        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-dark);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .3s ease,visibility .3s ease;gap:16px}
+        .loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loading-spinner{width:48px;height:48px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+        .loading-text{color:#fff;font-size:14px;opacity:0.7}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        
+        /* Page container */
+        .page-container{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;padding:15px;box-sizing:border-box;background:var(--bg-dark)}
+        .editor-card{width:100%;height:100%;background:var(--bg-card);border-radius:0;overflow:hidden;display:flex;flex-direction:column;contain:layout style paint;position:relative}
+        #aiEditor{height:100%;margin:0;flex:1;overflow:hidden}
+        
+        /* Mobile optimizations */
+        @media(max-width:768px){.page-container{padding:8px}.editor-card{border-radius:0}}
+        @media(max-width:480px){.page-container{padding:5px}.editor-card{border-radius:0}}
+    </style>
+    
+    <!-- Load fonts asynchronously -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/></noscript>
+    
+    <style>
+        /* Theme variables */
+        .aie-theme-light{--my-default-color:#fafafa}
+        .aie-theme-dark{--my-default-color:#333}
+        .aie-container div.default{background:var(--my-default-color)}
+        
+        /* Settings Panel - BOTTOM position */
+        .settings-panel{position:absolute;bottom:80px;right:28px;z-index:10000;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 -4px 20px rgba(255,255,255,.15);font-family:'Manrope',sans-serif;min-width:240px;transition:transform .2s ease,opacity .2s ease;will-change:transform}
+        .settings-panel h3{margin:0 0 12px 0;font-size:14px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+        
+        .settings-group{margin-bottom:12px}
+        .settings-group:last-child{margin-bottom:0}
+        .settings-group label{display:block;font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+        
+        /* Select styles */
+        .settings-panel select{width:100%;padding:10px 36px 10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:'Manrope',sans-serif;background:var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center;color:var(--text-primary);cursor:pointer;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+        .settings-panel select:hover{border-color:#9ca3af}
+        .settings-panel select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
+        
+        /* Toggle panel button - BOTTOM position, Lucide style, B&W */
+        .toggle-settings{position:absolute;bottom:20px;right:28px;z-index:10001;width:40px;height:40px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:all .2s ease}
+        .toggle-settings:hover{background:#f3f4f6;border-color:#d1d5db}
+        .toggle-settings svg{width:20px;height:20px;stroke:#374151;stroke-width:2;fill:none}
+        .toggle-settings.active{background:#f3f4f6}
+        .toggle-settings.active svg{stroke:#111827}
+        
+        /* Panel collapsed state */
+        .settings-panel.collapsed{transform:translateY(20px);opacity:0;pointer-events:none;visibility:hidden}
+        
+        /* Dark theme */
+        .aie-theme-dark .settings-panel{background:#1f2937;border-color:#374151}
+        .aie-theme-dark .settings-panel h3{color:#e5e7eb}
+        .aie-theme-dark .settings-panel label{color:#9ca3af}
+        .aie-theme-dark .settings-panel select{background:#374151 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center;border-color:#4b5563;color:#e5e7eb}
+        .aie-theme-dark .toggle-settings{background:#1f2937;border-color:#374151}
+        .aie-theme-dark .toggle-settings:hover{background:#374151}
+        .aie-theme-dark .toggle-settings svg{stroke:#9ca3af}
+        .aie-theme-dark .toggle-settings.active svg{stroke:#e5e7eb}
+        
+        /* Mobile responsive */
+        @media(max-width:768px){
+            .settings-panel{bottom:70px;right:12px;left:12px;min-width:auto}
+            .toggle-settings{bottom:16px;right:16px}
+        }
+        @media(max-width:480px){
+            .settings-panel{bottom:60px;right:8px;left:8px;padding:12px;border-radius:10px}
+            .settings-panel h3{font-size:13px}
+            .toggle-settings{bottom:12px;right:12px;width:36px;height:36px}
+        }
+        
+        /* iOS Safe Areas */
+        @supports(padding-top:env(safe-area-inset-top)){
+            .page-container{padding-top:max(15px,env(safe-area-inset-top));padding-bottom:max(15px,env(safe-area-inset-bottom));padding-left:max(15px,env(safe-area-inset-left));padding-right:max(15px,env(safe-area-inset-right))}
+        }
+        
+        /* Touch improvements */
+        @media(max-width:768px){.aie-menu-item>div{min-height:44px;min-width:44px}}
+        @media(hover:none) and (pointer:coarse){.aie-menu-item>div:active{background:var(--aie-menus-item-hover-color)}}
+        
+        .aie-content{-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+        .editor-card,.settings-panel,.toggle-settings{transform:translateZ(0);backface-visibility:hidden}
+        
+        /* Token usage display */
+        .token-usage{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#f3f4f6;border-radius:6px;font-size:11px;color:var(--text-secondary);margin-top:10px}
+        .token-usage span{font-weight:600;color:var(--text-primary)}
+        .aie-theme-dark .token-usage{background:#374151}
+        .aie-theme-dark .token-usage span{color:#e5e7eb}
+        
+        /* Offline indicator */
+        .offline-banner{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;padding:8px 16px;border-radius:16px;font-size:12px;font-weight:500;z-index:99998;display:none;box-shadow:0 2px 8px rgba(245,158,11,.3)}
+        .offline-banner.visible{display:flex;align-items:center;gap:6px}
+        
+        /* Update available banner */
+        .update-banner{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:8px 16px;border-radius:16px;font-size:12px;font-weight:500;z-index:99998;display:none;box-shadow:0 2px 8px rgba(37,99,235,.3);cursor:pointer}
+        .update-banner.visible{display:flex;align-items:center;gap:8px}
+        .update-banner:hover{background:var(--primary-dark)}
+    </style>
+    
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Error:', msg, url, lineNo, columnNo, error);
+            return false;
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+    </script>
+  <script type="module" crossorigin src="/assets/main-mfcmmFGn.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/prosemirror-CATLC7B1.js">
+  <link rel="modulepreload" crossorigin href="/assets/tiptap-DY39qvpR.js">
+  <link rel="modulepreload" crossorigin href="/assets/ui-CnBRltuW.js">
+  <link rel="modulepreload" crossorigin href="/assets/i18n-RuslFlbv.js">
+  <link rel="modulepreload" crossorigin href="/assets/highlight-RKK9TBid.js">
+  <link rel="modulepreload" crossorigin href="/assets/markdown-DgXgfdHp.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-DfpdvxTi.css">
 </head>
 <body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay" aria-label="Loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading AiEditor...</div>
+    </div>
+    
+    <!-- Offline indicator -->
+    <div class="offline-banner" id="offlineBanner">📡 Offline</div>
+    
+    <!-- Update available banner -->
+    <div class="update-banner" id="updateBanner" onclick="location.reload()">
+        🔄 Update available
+    </div>
 
     <div class="page-container">
         <div class="editor-card">
-            <div class="ai-model-selector">
-                <label for="aiModelSelect">AI Model:</label>
-                <select id="aiModelSelect">
-                    <option value="anthropic/claude-3-haiku">Claude 3 Haiku (Fast)</option>
-                    <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet (Balanced)</option>
-                    <option value="anthropic/claude-3-opus">Claude 3 Opus (Best)</option>
-                    <option value="openai/gpt-4-turbo-preview">GPT-4 Turbo</option>
-                    <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                    <option value="google/gemini-pro">Google Gemini Pro</option>
-                    <option value="meta-llama/llama-2-70b-chat">Llama 2 70B</option>
-                    <option value="mistralai/mistral-medium">Mistral Medium</option>
-                </select>
+            <div id="aiEditor"></div>
+            
+            <!-- Toggle settings button - Lucide Settings icon, B&W -->
+            <button class="toggle-settings" id="toggleSettings" aria-label="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+            
+            <!-- Settings Panel -->
+            <div class="settings-panel collapsed" id="settingsPanel">
+                <h3>⚙️ AI Model</h3>
+                
+                <div class="settings-group">
+                    <label for="aiModelSelect">Select Model</label>
+                    <select id="aiModelSelect" aria-label="Select AI Model">
+                        <optgroup label="Claude (Anthropic)">
+                            <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet ⭐</option>
+                            <option value="anthropic/claude-3-haiku">Claude 3 Haiku (Fast)</option>
+                            <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet</option>
+                            <option value="anthropic/claude-3-opus">Claude 3 Opus (Best)</option>
+                        </optgroup>
+                        <optgroup label="GPT (OpenAI)">
+                            <option value="openai/gpt-4o">GPT-4o ⭐</option>
+                            <option value="openai/gpt-4o-mini">GPT-4o Mini (Fast)</option>
+                            <option value="openai/gpt-4-turbo">GPT-4 Turbo</option>
+                            <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </optgroup>
+                        <optgroup label="Google">
+                            <option value="google/gemini-pro-1.5">Gemini Pro 1.5 ⭐</option>
+                            <option value="google/gemini-pro">Gemini Pro</option>
+                            <option value="google/gemini-flash-1.5">Gemini Flash 1.5</option>
+                        </optgroup>
+                        <optgroup label="Open Source">
+                            <option value="meta-llama/llama-3.1-70b-instruct">Llama 3.1 70B</option>
+                            <option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B (Fast)</option>
+                            <option value="mistralai/mistral-large">Mistral Large</option>
+                            <option value="mistralai/mixtral-8x7b-instruct">Mixtral 8x7B</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="cohere/command-r-plus">Command R+</option>
+                            <option value="deepseek/deepseek-chat">DeepSeek Chat</option>
+                            <option value="qwen/qwen-2-72b-instruct">Qwen 2 72B</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="token-usage" id="tokenUsage">
+                    <span>Tokens:</span>
+                    <span id="tokenCount">0</span>
+                </div>
             </div>
-
-            <div id="aiEditor" style="height: 100vh; margin: 0"></div>
         </div>
-    </div>
+    </div>
+
+    <!-- Main script -->
+    
+    <!-- Service Worker & Performance -->
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        registration.addEventListener('updatefound', function() {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', function() {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    document.getElementById('updateBanner').classList.add('visible');
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(error) {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
+        
+        // Offline detection
+        function updateOnlineStatus() {
+            var banner = document.getElementById('offlineBanner');
+            if (navigator.onLine) {
+                banner.classList.remove('visible');
+            } else {
+                banner.classList.add('visible');
+            }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+        
+        // Settings panel toggle
+        document.getElementById('toggleSettings').addEventListener('click', function() {
+            var panel = document.getElementById('settingsPanel');
+            var btn = this;
+            panel.classList.toggle('collapsed');
+            btn.classList.toggle('active');
+        });
+        
+        // Loading overlay removal
+        (function(){
+            var overlay = document.getElementById('loadingOverlay');
+            var hideOverlay = function(){
+                requestAnimationFrame(function(){
+                    overlay.classList.add('hidden');
+                    setTimeout(function(){overlay.remove()}, 350);
+                });
+            };
+            
+            if(document.readyState === 'complete'){
+                setTimeout(hideOverlay, 300);
+            } else {
+                window.addEventListener('load', function(){setTimeout(hideOverlay, 300)}, {once: true});
+            }
+            setTimeout(hideOverlay, 3000);
+        })();
+        
+        // Dynamic viewport height
+        (function(){
+            var setVh = function(){
+                document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+            };
+            var throttledResize = null;
+            window.addEventListener('resize', function(){
+                if(throttledResize) return;
+                throttledResize = requestAnimationFrame(function(){
+                    setVh();
+                    throttledResize = null;
+                });
+            }, {passive: true});
+            setVh();
+        })();
+        
+        // Preload settings from localStorage
+        (function(){
+            var savedModel = localStorage.getItem('aiModel');
+            var select = document.getElementById('aiModelSelect');
+            if(savedModel && select) select.value = savedModel;
+        })();
+    </script>
 </body>
 </html>

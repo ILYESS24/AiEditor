@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  
+  <!-- Shine overlay -->
+  <rect width="192" height="96" rx="40" fill="url(#shine)"/>
+  
+  <!-- AI symbol -->
+  <g transform="translate(32, 40)">
+    <!-- A letter -->
+    <path d="M20 112L50 32h28l30 80h-24l-6-18H50l-6 18H20zm38-36h20l-10-30-10 30z" fill="white"/>
+    
+    <!-- I letter with sparkle -->
+    <path d="M98 32h24v80H98V32z" fill="white"/>
+    
+    <!-- AI sparkles -->
+    <circle cx="110" cy="20" r="4" fill="white" opacity="0.8"/>
+    <circle cx="125" cy="28" r="2.5" fill="white" opacity="0.6"/>
+    <circle cx="95" cy="25" r="2" fill="white" opacity="0.5"/>
+  </g>
+  
+  <!-- Bottom accent line -->
+  <rect x="40" y="160" width="112" height="4" rx="2" fill="white" opacity="0.5"/>
+</svg>

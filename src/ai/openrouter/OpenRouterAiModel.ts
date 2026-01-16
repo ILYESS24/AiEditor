@@ -6,24 +6,22 @@ import {OpenRouterModelConfig} from "./OpenRouterModelConfig.ts";
 import {SseClient} from "../core/client/sse/SseClient.ts";
 import {InnerEditor} from "../../core/AiEditor.ts";
 
-
 export class OpenRouterAiModel extends AiModel {
 
     constructor(editor: InnerEditor, globalConfig: AiGlobalConfig) {
         super(editor, globalConfig, "openrouter");
         this.aiModelConfig = {
             endpoint: "https://openrouter.ai/api",
-            // model: "openai/gpt-3.5-turbo",
             ...globalConfig.models?.openrouter
         } as OpenRouterModelConfig;
     }
 
     createAiClient(url: string, listener: AiMessageListener): AiClient {
         const config = this.aiModelConfig as OpenRouterModelConfig;
-        const headers = {
+        const headers: Record<string, string> = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${config.apiKey}`,
-        } as any
+        };
 
         return new SseClient({
             url,
@@ -36,8 +34,7 @@ export class OpenRouterAiModel extends AiModel {
                 let message = null;
                 try {
                     message = JSON.parse(bodyString);
-                } catch (err) {
-                    console.error("error", err, bodyString);
+                } catch (_err) {
                     return;
                 }
 
@@ -50,10 +47,11 @@ export class OpenRouterAiModel extends AiModel {
                     role: "assistant",
                     content: message.choices[0].delta?.content || "",
                     index: message.choices[0].index,
-                })
-                // Notify AI token consumption
+                });
+
+                // Token consumption tracking
                 if (this.globalConfig.onTokenConsume && message.choices[0].usage?.["total_tokens"]) {
-                    this.globalConfig.onTokenConsume(this.aiModelName, this.aiModelConfig!, message.choices[0].usage["total_tokens"])
+                    this.globalConfig.onTokenConsume(this.aiModelName, this.aiModelConfig!, message.choices[0].usage["total_tokens"]);
                 }
             }
         });
@@ -61,17 +59,17 @@ export class OpenRouterAiModel extends AiModel {
 
     wrapPayload(prompt: string) {
         const config = this.aiModelConfig as OpenRouterModelConfig;
-        const payload = {
-            "messages": [
+        const payload: Record<string, any> = {
+            messages: [
                 {
-                    "role": "user",
-                    "content": prompt,
+                    role: "user",
+                    content: prompt,
                 }
             ],
-            "max_tokens": config.maxTokens || null,
-            "temperature": config.temperature || null,
-            "stream": true
-        } as any
+            max_tokens: config.maxTokens || null,
+            temperature: config.temperature || null,
+            stream: true
+        };
 
         if (config.model) {
             payload.model = config.model;
@@ -89,9 +87,6 @@ export class OpenRouterAiModel extends AiModel {
                 return config.customUrl();
             }
         }
-
         return `${config.endpoint}/v1/chat/completions`;
     }
-
-
 }

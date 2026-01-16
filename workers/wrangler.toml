@@ -1,0 +1,20 @@
+name = "aieditor-api"
+main = "api-proxy.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Environment variables (set via Cloudflare dashboard or wrangler secret)
+# These are placeholders - actual keys should be set as secrets
+[vars]
+NODE_ENV = "production"
+
+# Uncomment and set your API keys as secrets:
+# npx wrangler secret put OPENROUTER_API_KEY
+# npx wrangler secret put OPENAI_API_KEY
+# npx wrangler secret put ANTHROPIC_API_KEY
+# npx wrangler secret put DEEPSEEK_API_KEY
+
+# Routes (optional - for custom domain)
+# [[routes]]
+# pattern = "api.yourdomain.com/*"
+# zone_name = "yourdomain.com"

@@ -3,7 +3,6 @@ import {Editor, EditorEvents} from "@tiptap/core";
 import {AiEditorOptions} from "../../core/AiEditor.ts";
 import {AiModelManager} from "../../ai/AiModelManager.ts";
 import {AiMenu} from "../../ai/AiGlobalConfig.ts";
-import {DefaultAiMessageListener} from "../../ai/core/DefaultAiMessageListener.ts";
 import {t} from "i18next";
 
 export const defaultAiMenus: AiMenu[] = [
@@ -35,30 +34,27 @@ export const defaultAiMenus: AiMenu[] = [
         text: "selected",
         model: "openrouter",
     }
-]
+];
 
 export class Ai extends AbstractDropdownMenuButton<AiMenu> {
 
-    aiMenus = defaultAiMenus.map((menu) => {
-        return {
-            ...menu,
-            name: `${t(menu.name)}`
-        }
-    });
+    aiMenus = defaultAiMenus.map((menu) => ({
+        ...menu,
+        name: `${t(menu.name)}`
+    }));
 
     constructor() {
         super();
-        this.dropDivHeight = "auto"
-        this.dropDivWith = "fit-content"
-        this.width = "36px"
-        this.menuTextWidth = "20px"
+        this.dropDivHeight = "auto";
+        this.dropDivWith = "fit-content";
+        this.width = "36px";
+        this.menuTextWidth = "20px";
     }
 
     onCreate(_: EditorEvents["create"], options: AiEditorOptions) {
         super.onCreate(_, options);
         this.menuData = options.ai?.menus || this.aiMenus;
     }
-
 
     renderTemplate() {
         this.template = `
@@ -70,9 +66,8 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
              </div>
          </div>
          </div>
-        `
+        `;
     }
-
 
     createMenuElement() {
         const div = document.createElement("div");
@@ -85,25 +80,25 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
             item.classList.add("aie-dropdown-item");
             item.innerHTML = `
             <div class="text" style="display: flex;padding: 5px 10px">${this.onDropdownItemRender(i)}</div>
-            `
+            `;
             item.addEventListener("click", (evt) => {
                 const menuItem = this.menuData[i];
                 if (menuItem.onClick) {
-                    menuItem.onClick(evt, this.editor!.aiEditor)
-                    this.tippyInstance!.hide()
+                    menuItem.onClick(evt, this.editor!.aiEditor);
+                    this.tippyInstance!.hide();
                 } else {
                     this.onDropdownItemClick(i);
-                    this.tippyInstance!.hide()
+                    this.tippyInstance!.hide();
                 }
             });
-            div.appendChild(item)
+            div.appendChild(item);
         }
         this.tippyEl = div;
         return div;
     }
 
     onTransaction(_: EditorEvents["transaction"]) {
-        //do nothing
+        // No-op for performance
     }
 
     onDropdownActive(_editor: Editor, _index: number): boolean {
@@ -112,108 +107,58 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
 
     getSelectedText(text: "selected" | "focusBefore") {
         if (text === "selected") {
-            const {selection, doc} = this.editor!.state
+            const {selection, doc} = this.editor!.state;
             return doc.textBetween(selection.from, selection.to);
-        } else {
-            return this.editor!.state.selection.$head.parent.textContent;
         }
+        return this.editor!.state.selection.$head.parent.textContent;
     }
 
     onDropdownItemClick(index: number): void {
         const aiMenu = this.menuData[index];
         const selectedText = this.getSelectedText(aiMenu.text!);
-
-        // Utiliser le modèle actuellement sélectionné dans le dropdown au lieu du modèle par défaut
         const currentModel = localStorage.getItem('aiModel') || 'anthropic/claude-3-haiku';
 
-        console.log('🎯 AI Feature clicked:', aiMenu.name);
-        console.log('📝 Selected text:', selectedText ? selectedText.substring(0, 50) + '...' : 'none');
-        console.log('🤖 Current selected model:', currentModel);
-        console.log('🔧 Using OpenRouter with model:', currentModel);
-        console.log('📋 Full prompt:', aiMenu.prompt);
-        console.log('🎯 Editor available:', !!this.editor);
-
         if (!selectedText) {
-            console.error("❌ Can not get selected text.");
-            alert("Veuillez sélectionner du texte d'abord !");
             return;
         }
 
         if (!this.editor) {
-            console.error("❌ Editor not available");
             return;
         }
 
-        // Toujours utiliser OpenRouter, mais avec le modèle sélectionné
         const aiModel = AiModelManager.get("openrouter");
-        console.log('🔍 OpenRouter AI Model found:', !!aiModel);
-
         if (!aiModel) {
-            console.error("❌ OpenRouter AI model not found");
-            alert("Erreur : Modèle AI non disponible");
             return;
         }
 
         try {
-            // Mettre à jour temporairement le modèle dans la configuration pour cette requête
             const originalModel = aiModel.aiModelConfig.model;
             aiModel.aiModelConfig.model = currentModel;
 
-            console.log('🚀 Starting AI chat with model:', currentModel);
-            console.log('📋 Final prompt:', aiMenu.prompt!.substring(0, 100) + '...');
-            console.log('📝 Text to process:', selectedText.substring(0, 100) + '...');
-
-            // Créer un message listener personnalisé qui insère directement
             const messageListener = {
-                onStart: (aiClient: any) => {
-                    console.log('✅ AI chat started successfully');
-                },
+                onStart: (_aiClient: any) => {},
                 onStop: () => {
-                    console.log('🛑 AI chat completed');
-                    // Restaurer le modèle original
                     aiModel.aiModelConfig.model = originalModel;
                 },
                 onMessage: (message: any) => {
-                    console.log('💬 AI response received:', message.content);
-
-                    if (message.content && message.content.trim()) {
-                        // Insérer directement le contenu à la position du curseur
-                        const { state } = this.editor!;
-                        const { selection } = state;
-
-                        // Créer une nouvelle sélection après le texte sélectionné
-                        const endPos = selection.to;
-                        const newSelection = {
-                            from: endPos,
-                            to: endPos
-                        };
-
-                        // Insérer le contenu
+                    if (message.content?.trim()) {
+                        const { selection } = this.editor!.state;
                         this.editor!.chain()
-                            .setTextSelection(newSelection)
+                            .setTextSelection({ from: selection.to, to: selection.to })
                             .insertContent(message.content.trim())
                             .run();
-
-                        console.log('✅ Content inserted successfully');
                     }
                 },
-                onError: (error: any) => {
-                    console.error('❌ AI chat error:', error);
-                    alert('Erreur AI : ' + error.message);
-                    // Restaurer le modèle original en cas d'erreur
+                onError: (_error: any) => {
                     aiModel.aiModelConfig.model = originalModel;
                 }
             };
 
-            // Lancer l'appel AI
             aiModel.chat(selectedText, aiMenu.prompt!, messageListener);
-
-        } catch (error) {
-            console.error('❌ Unexpected error:', error);
-            alert('Erreur inattendue : ' + error.message);
+        } catch (_e) {
+            // Silent fail in production
         }
     }
-
 
     onDropdownItemRender(index: number): Element | string {
         return `<div style="width:18px;height: 18px;">${this.menuData[index].icon}</div><div style="margin-left: 10px">${this.menuData[index].name}</div>`;
@@ -222,6 +167,4 @@ export class Ai extends AbstractDropdownMenuButton<AiMenu> {
     onMenuTextRender(index: number): Element | string {
         return this.menuData[index].icon;
     }
-
 }
-
